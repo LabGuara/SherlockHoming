@@ -57,7 +57,7 @@ int OpenEPOS(unsigned int *ErrorCode)
 
     if (*ErrorCode == 0){
         Result = MMC_SUCCESS;
-        cout << "Your EPOS is connected!" << "\n";
+        cout << "Your EPOS is connected!!!" << "\n";
     }
 
     return Result;
