@@ -93,38 +93,34 @@ int FindLimits(unsigned int *ErrorCode)
     cout << "Move to the first limit! Press 1 and enter when done.";
     cin >> x;
 
+    int Result = MMC_FAILED;
     if(x==1)
     {
         //Move to reference position: (value is incremental and negative to fit prosthesis assemble type)
-        int Result = MMC_FAILED;
         int TargetInc = -Conversion(limitOffset, 0);
 
         Result = VCS_MoveToPosition(KeyHandle, NodeId, TargetInc, 1, 1, ErrorCode);
 
-        if (!VCS_ActivateHomingMode(mHandle, NodeID, &ErrCode)) {
-            printf("Error activating homming, ErrCode is %i\n", (int) ErrCode);
-            /* release lock */
-            pthread_mutex_unlock( &rtw_maxon_mutex );
-            return;
-        };
-        if (!VCS_DefinePosition(mHandle, NodeID, 0, &ErrCode)) {
-            printf("Error setting position to zero for node %i, ErrCode is %i\n", (int) NodeID, (int) ErrCode);
-            /* release lock */
-            pthread_mutex_unlock( &rtw_maxon_mutex );
-            return;
-        };
+        if (Result)
+        {
+            Result = VCS_ActivateHomingMode(KeyHandle, NodeId, ErrorCode);
+        }
 
+        if (Result)
+        {
+            Result = VCS_DefinePosition(KeyHandle, NodeId, 0, ErrorCode);
+            cout << "Here is your new home!" << "\n";
+        }
 
         if (*ErrorCode == 0)
         {
         Result = MMC_SUCCESS;
-        cout << "Your EPOS is connected!!!" << "\n";
+        cout << "Your Motor is ready!!!" << "\n";
         }
-
-        return Result;
-
-
     }
+
+    return Result;
+    
 }
 
 int main(int argc, char** argv) {
