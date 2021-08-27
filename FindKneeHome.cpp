@@ -27,6 +27,7 @@ typedef int BOOL;
 using namespace std;
 
 const string g_programName = "SherlockHoming";
+int limitOffset = 5; //set for 5°
 
 #ifndef MMC_SUCCESS
 	#define MMC_SUCCESS 0
@@ -40,6 +41,25 @@ const string g_programName = "SherlockHoming";
 void LogError(string functionName, int Result, unsigned int ErrorCode)
 {
 	cerr << g_programName << ": " << functionName << " failed (result=" << Result << ", errorCode=0x" << std::hex << ErrorCode << ")"<< endl;
+}
+
+// ° -> Inc or Inc -> °
+int Conversion(int Value, bool direction)
+{
+    int output = 0;
+
+    if (direction == 0)
+    {
+        output = (8192*51)*Value / 360;
+        cout << "(°) -> Inc" << "\n";
+    }
+    else
+    {
+        output = 360*Value / (8192*51);
+        cout << "Inc -> (°)" << "\n";
+    }
+
+    return output;
 }
 
 //OpenEPOS: recognizes the EPOS connected to the microcontroler.
@@ -66,7 +86,16 @@ int OpenEPOS(unsigned int *ErrorCode)
 //FindLimits: Search for the limit of the prosthesis and them asks for distance in (°) desired for homing
 int FindLimits(unsigned int *ErrorCode)
 {
+    int x = 0;
+    //ask user to move too the first limit - smaller distance to the reference.
+    cout << "Move to the first limit! Press 1 and enter when done.";
+    cin >> x;
 
+    if(x==1)
+    {
+        //Move to reference position: (value is incremental and negative to fit prosthesis assemble type)
+
+    }
 }
 
 int main(int argc, char** argv) {
