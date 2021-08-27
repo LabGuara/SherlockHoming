@@ -28,6 +28,8 @@ using namespace std;
 
 const string g_programName = "SherlockHoming";
 int limitOffset = 5; //set for 5°
+void* KeyHandle = 0;
+unsigned short NodeId = 1;
 
 #ifndef MMC_SUCCESS
 	#define MMC_SUCCESS 0
@@ -71,7 +73,6 @@ int OpenEPOS(unsigned int *ErrorCode)
     char *ProtocolStackName = "MAXON SERIAL V2";
     char *InterfaceName = "USB";
     char *PortName = "USB0";
-    void* KeyHandle = 0;
 
     KeyHandle = VCS_OpenDevice(DeviceName, ProtocolStackName, InterfaceName, PortName, ErrorCode);
 
@@ -94,6 +95,11 @@ int FindLimits(unsigned int *ErrorCode)
     if(x==1)
     {
         //Move to reference position: (value is incremental and negative to fit prosthesis assemble type)
+        int Result = MMC_FAILED;
+        int Target_Inc = -Conversion(limitOffset, 0);
+
+        Result = VCS_MoveToPosition(KeyHandle, NodeId, 1000, 1, 1, &p_rlErrorCode);
+
 
     }
 }
