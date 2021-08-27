@@ -27,7 +27,7 @@ typedef int BOOL;
 using namespace std;
 
 const string g_programName = "SherlockHoming";
-int limitOffset = 5; //set for 5°
+int limitOffset = 5; //set for 5° in this case.
 void* KeyHandle = 0;
 unsigned short NodeId = 1;
 
@@ -114,8 +114,8 @@ int FindLimits(unsigned int *ErrorCode)
 
         if (*ErrorCode == 0)
         {
-        Result = MMC_SUCCESS;
-        cout << "Your Motor is ready!!!" << "\n";
+            Result = MMC_SUCCESS;
+            cout << "Your Motor is ready!!!" << "\n";
         }
     }
 
@@ -142,6 +142,5 @@ int main(int argc, char** argv) {
 
     cout << "Sherlock is done!" << "\n";
     return lResult;
-
 
 }
