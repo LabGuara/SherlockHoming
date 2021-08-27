@@ -76,7 +76,8 @@ int OpenEPOS(unsigned int *ErrorCode)
 
     KeyHandle = VCS_OpenDevice(DeviceName, ProtocolStackName, InterfaceName, PortName, ErrorCode);
 
-    if (*ErrorCode == 0){
+    if (*ErrorCode == 0)
+    {
         Result = MMC_SUCCESS;
         cout << "Your EPOS is connected!!!" << "\n";
     }
@@ -96,9 +97,31 @@ int FindLimits(unsigned int *ErrorCode)
     {
         //Move to reference position: (value is incremental and negative to fit prosthesis assemble type)
         int Result = MMC_FAILED;
-        int Target_Inc = -Conversion(limitOffset, 0);
+        int TargetInc = -Conversion(limitOffset, 0);
 
-        Result = VCS_MoveToPosition(KeyHandle, NodeId, 1000, 1, 1, &p_rlErrorCode);
+        Result = VCS_MoveToPosition(KeyHandle, NodeId, TargetInc, 1, 1, ErrorCode);
+
+        if (!VCS_ActivateHomingMode(mHandle, NodeID, &ErrCode)) {
+            printf("Error activating homming, ErrCode is %i\n", (int) ErrCode);
+            /* release lock */
+            pthread_mutex_unlock( &rtw_maxon_mutex );
+            return;
+        };
+        if (!VCS_DefinePosition(mHandle, NodeID, 0, &ErrCode)) {
+            printf("Error setting position to zero for node %i, ErrCode is %i\n", (int) NodeID, (int) ErrCode);
+            /* release lock */
+            pthread_mutex_unlock( &rtw_maxon_mutex );
+            return;
+        };
+
+
+        if (*ErrorCode == 0)
+        {
+        Result = MMC_SUCCESS;
+        cout << "Your EPOS is connected!!!" << "\n";
+        }
+
+        return Result;
 
 
     }
